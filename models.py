@@ -64,6 +64,8 @@ class Screenshot(db.Model):
 
     ss_id        = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name         = db.Column(db.String(100))
+    width        = db.Column(db.Integer)
+    height       = db.Column(db.Integer)
     file_id      = db.Column(db.Integer, db.ForeignKey("files.file_id"))
     create_by    = db.Column(db.Integer)
     create_dt    = db.Column(db.DateTime)
