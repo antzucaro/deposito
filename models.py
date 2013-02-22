@@ -40,7 +40,7 @@ class Map(db.Model):
     name         = db.Column(db.String(100))
     approved     = db.Column(db.Boolean)
     downloadable = db.Column(db.Boolean)
-    file_id      = db.Column(db.Integer)
+    file_id      = db.Column(db.Integer, db.ForeignKey("files.file_id"))
     create_by    = db.Column(db.Integer)
     create_dt    = db.Column(db.DateTime)
     update_by    = db.Column(db.Integer)
