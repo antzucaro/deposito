@@ -1,0 +1,47 @@
+{% extends "base.jinja" %}
+
+{% block body %}
+<h2>Oh hi, this is the main index.</h2>
+
+{% if maps|length == 0 or maps is not defined %}
+<p>Hmm, there doesn't seem to be anything here!</p>
+{% else %}
+<p>Here's my list of maps I've seen so far:</p>
+
+<table class="table table-hover">
+  <thead>
+    <tr>
+      <th>Map ID</th>
+      <th>Name</th>
+      <th>Approved?</th>
+      <th>Downloadable?</th>
+      <th>Last Updated</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for m in maps %}
+    <tr>
+      <td>{{ m.map_id }}</td>
+      <td>{{ m.name }}</td>
+      <td>
+        {% if m.approved %}
+        Yes
+        {% else %}
+        No
+        {% endif %}
+      </td>
+      <td>
+        {% if m.downloadable %}
+        Yes
+        {% else %}
+        No
+        {% endif %}
+      </td>
+      <td>{{ m.update_dt|e }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+{% endblock %}
