@@ -58,6 +58,28 @@ class Map(db.Model):
     def __repr__(self):
         return '<Map %s>' % self.name
 
+class Screenshot(db.Model):
+    __tablename__ = 'screenshots'
+    __table_args__ = {'sqlite_autoincrement':True}
+
+    ss_id        = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name         = db.Column(db.String(100))
+    file_id      = db.Column(db.Integer, db.ForeignKey("files.file_id"))
+    create_by    = db.Column(db.Integer)
+    create_dt    = db.Column(db.DateTime)
+    update_by    = db.Column(db.Integer)
+    update_dt    = db.Column(db.DateTime)
+
+    def __init__(self, name, create_by):
+        self.name         = name
+        self.create_by    = create_by
+        self.update_by    = create_by
+        self.create_dt    = datetime.utcnow()
+        self.update_dt    = self.create_dt
+
+    def __repr__(self):
+        return '<Screenshot %s>' % self.name
+
 class User(db.Model):
     __tablename__ = 'users'
     __table_args__ = {'sqlite_autoincrement':True}
