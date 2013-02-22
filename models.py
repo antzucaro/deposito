@@ -16,8 +16,10 @@ class Map(db.Model):
     update_dt    = db.Column(db.DateTime)
 
     def __init__(self, name, create_by):
+        self.name         = name
         self.approved     = False
         self.downloadable = False
+        self.create_by    = create_by
         self.update_by    = create_by
         self.create_dt    = datetime.utcnow()
         self.update_dt    = self.create_dt
