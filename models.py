@@ -3,6 +3,7 @@ from flask.ext.sqlalchemy import SQLAlchemy
 
 # Note: since we're not binding the app here, we have to call
 # db.create_all(app=app) from the command line to create the tables
+# and for more stuff (like a session), you'll need app.test_request_context()
 db = SQLAlchemy()
 
 class Map(db.Model):
