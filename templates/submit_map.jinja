@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<form class="form-horizontal">
+<form class="form-horizontal" action='http://localhost:5000/submit' method='post' enctype=multipart/form-data>
   <fieldset>
 
     <div id="legend" class="">
@@ -29,7 +29,7 @@
     <div class="control-group">
       <label class="control-label">PK3</label>
       <div class="controls">
-        <input class="input-file" id="fileInput" type="file">
+        <input class="input-file" name="mapfile" type="file">
       </div>
     </div>
 
@@ -91,7 +91,6 @@
           </label>
         </div>
       </div>
-
     </div>
 
     <div class="control-group">
@@ -105,7 +104,7 @@
       <label class="control-label"></label>
 
       <div class="controls">
-        <button class="btn btn-primary">Submit</button>
+        <button class="btn btn-primary" type="submit">Submit</button>
       </div>
     </div>
 
