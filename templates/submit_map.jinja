@@ -2,122 +2,114 @@
 
 {% block body %}
 
-  <form class="form-horizontal">
-    <fieldset>
-      <div id="legend" class="">
-        <legend class="">Submit A Map</legend>
+<form class="form-horizontal">
+  <fieldset>
+
+    <div id="legend" class="">
+      <legend class="">Submit A Map</legend>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="input01">Name</label>
+      <div class="controls">
+        <input placeholder="" class="input-xlarge" type="text">
+        <p class="help-block">Human-readable map name</p>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">Description</label>
+      <div class="controls">
+        <div class="textarea">
+          <textarea type="" class=""> </textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">PK3</label>
+      <div class="controls">
+        <input class="input-file" id="fileInput" type="file">
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">License</label>
+      <div class="controls">
+
+        <div class="span1">
+          <label class="checkbox">
+            <input value="GPLv2" type="checkbox">
+            GPLv2
+          </label>
+          <label class="checkbox">
+            <input value="GPLv3" type="checkbox">
+            GPLv3
+          </label>
+          <label class="checkbox">
+            <input value="MIT" type="checkbox">
+            MIT
+          </label>
+          <label class="checkbox">
+            <input value="BSD" type="checkbox">
+            BSD
+          </label>
+          <label class="checkbox">
+            <input value="Apache" type="checkbox">
+            Apache
+          </label>
+          <label class="checkbox">
+            <input value="CC BY" type="checkbox">
+            CC BY
+          </label>
+        </div>
+
+        <div class="span2">
+          <label class="checkbox">
+            <input value="CC BY-SA" type="checkbox">
+            CC BY-SA
+          </label>
+          <label class="checkbox">
+            <input value="CC BY-ND" type="checkbox">
+            CC BY-ND
+          </label>
+          <label class="checkbox">
+            <input value="CC BY-NC" type="checkbox">
+            CC BY-NC
+          </label>
+          <label class="checkbox">
+            <input value="CC BY-NC-SA" type="checkbox">
+            CC BY-NC-SA
+          </label>
+          <label class="checkbox">
+            <input value="CC BY-NC-ND" type="checkbox">
+            CC BY-NC-ND
+          </label>
+          <label class="checkbox">
+            <input value="Other" type="checkbox">
+            Other
+          </label>
+        </div>
       </div>
 
-    <div class="control-group">
-
-          <!-- Text input-->
-          <label class="control-label" for="input01">Text input</label>
-          <div class="controls">
-            <input placeholder="placeholder" class="input-xlarge" type="text">
-            <p class="help-block">Supporting help text</p>
-          </div>
-        </div><div class="control-group">
-
-          <!-- Text input-->
-          <label class="control-label" for="input01">Name</label>
-          <div class="controls">
-            <input placeholder="" class="input-xlarge" type="text">
-            <p class="help-block">Human-readable map name</p>
-          </div>
-        </div>
+    </div>
 
     <div class="control-group">
-
-          <!-- Textarea -->
-          <label class="control-label">Description</label>
-          <div class="controls">
-            <div class="textarea">
-                  <textarea type="" class=""> </textarea>
-            </div>
-          </div>
-        </div><div class="control-group">
-          <label class="control-label">PK3</label>
-
-          <!-- File Upload -->
-          <div class="controls">
-            <input class="input-file" id="fileInput" type="file">
-          </div>
-        </div>
-
+      <label class="control-label" for="input01">Email Address</label>
+      <div class="controls">
+        <input placeholder="" class="input-xlarge" type="text">
+        <p class="help-block">Your email address (for any questions)</p>
+      </div>
+    </div>
     <div class="control-group">
-          <label class="control-label">License</label>
-          <div class="controls">
-      <!-- Multiple Checkboxes -->
-      <label class="checkbox">
-        <input value="GPLv2" type="checkbox">
-        GPLv2
-      </label>
-      <label class="checkbox">
-        <input value="GPLv3" type="checkbox">
-        GPLv3
-      </label>
-      <label class="checkbox">
-        <input value="MIT" type="checkbox">
-        MIT
-      </label>
-      <label class="checkbox">
-        <input value="BSD" type="checkbox">
-        BSD
-      </label>
-      <label class="checkbox">
-        <input value="Apache" type="checkbox">
-        Apache
-      </label>
-      <label class="checkbox">
-        <input value="CC BY" type="checkbox">
-        CC BY
-      </label>
-      <label class="checkbox">
-        <input value="CC BY-SA" type="checkbox">
-        CC BY-SA
-      </label>
-      <label class="checkbox">
-        <input value="CC BY-ND" type="checkbox">
-        CC BY-ND
-      </label>
-      <label class="checkbox">
-        <input value="CC BY-NC" type="checkbox">
-        CC BY-NC
-      </label>
-      <label class="checkbox">
-        <input value="CC BY-NC-SA" type="checkbox">
-        CC BY-NC-SA
-      </label>
-      <label class="checkbox">
-        <input value="CC BY-NC-ND" type="checkbox">
-        CC BY-NC-ND
-      </label>
-      <label class="checkbox">
-        <input value="Other" type="checkbox">
-        Other
-      </label>
-  </div>
+      <label class="control-label"></label>
 
-        </div>
+      <div class="controls">
+        <button class="btn btn-primary">Submit</button>
+      </div>
+    </div>
 
-    <div class="control-group">
-
-          <!-- Text input-->
-          <label class="control-label" for="input01">Email Address</label>
-          <div class="controls">
-            <input placeholder="" class="input-xlarge" type="text">
-            <p class="help-block">Your email address (for any questions)</p>
-          </div>
-        </div><div class="control-group">
-          <label class="control-label"></label>
-
-          <!-- Button -->
-          <div class="controls">
-            <button class="btn btn-primary">Submit</button>
-          </div>
-        </div>
-
-    </fieldset>
-  </form>
+  </fieldset>
+</form>
 
 {% endblock %}
