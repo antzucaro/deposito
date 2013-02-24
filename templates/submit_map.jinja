@@ -12,7 +12,7 @@
     <div class="control-group">
       <label class="control-label" for="input01">Name</label>
       <div class="controls">
-        <input placeholder="" class="input-xlarge" type="text">
+        <input name="map_name" placeholder="" class="input-xlarge" type="text">
         <p class="help-block">Human-readable map name</p>
       </div>
     </div>
@@ -21,7 +21,7 @@
       <label class="control-label">Description</label>
       <div class="controls">
         <div class="textarea">
-          <textarea type="" class=""> </textarea>
+          <textarea name="map_descr" type="" class=""> </textarea>
         </div>
       </div>
     </div>
@@ -29,7 +29,22 @@
     <div class="control-group">
       <label class="control-label">PK3</label>
       <div class="controls">
-        <input class="input-file" name="mapfile" type="file">
+        <input class="input-file" name="map_file" type="file">
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label" for="input01">Version</label>
+      <div class="controls">
+        <input name="map_version" placeholder="" class="input-xlarge" type="text">
+        <p class="help-block">Map version</p>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">Primary Screenshot</label>
+      <div class="controls">
+        <input class="input-file" name="map_screenshot" type="file">
       </div>
     </div>
 
@@ -39,54 +54,54 @@
 
         <div class="span1">
           <label class="checkbox">
-            <input value="GPLv2" type="checkbox">
+            <input name="GPLv2" value="GPLv2" type="checkbox">
             GPLv2
           </label>
           <label class="checkbox">
-            <input value="GPLv3" type="checkbox">
+            <input name="GPLv3" value="GPLv3" type="checkbox">
             GPLv3
           </label>
           <label class="checkbox">
-            <input value="MIT" type="checkbox">
+            <input name="MIT" value="MIT" type="checkbox">
             MIT
           </label>
           <label class="checkbox">
-            <input value="BSD" type="checkbox">
+            <input name="BSD" value="BSD" type="checkbox">
             BSD
           </label>
           <label class="checkbox">
-            <input value="Apache" type="checkbox">
+            <input name="Apache" value="Apache" type="checkbox">
             Apache
           </label>
           <label class="checkbox">
-            <input value="CC BY" type="checkbox">
+            <input name="CC BY" value="CC BY" type="checkbox">
             CC BY
           </label>
         </div>
 
         <div class="span2">
           <label class="checkbox">
-            <input value="CC BY-SA" type="checkbox">
+            <input name="CC BY-SA" value="CC BY-SA" type="checkbox">
             CC BY-SA
           </label>
           <label class="checkbox">
-            <input value="CC BY-ND" type="checkbox">
+            <input name="CC BY-ND" value="CC BY-ND" type="checkbox">
             CC BY-ND
           </label>
           <label class="checkbox">
-            <input value="CC BY-NC" type="checkbox">
+            <input name="CC BY-NC" value="CC BY-NC" type="checkbox">
             CC BY-NC
           </label>
           <label class="checkbox">
-            <input value="CC BY-NC-SA" type="checkbox">
+            <input name="CC BY-NC-SA" value="CC BY-NC-SA" type="checkbox">
             CC BY-NC-SA
           </label>
           <label class="checkbox">
-            <input value="CC BY-NC-ND" type="checkbox">
+            <input name="CC BY-NC-ND" value="CC BY-NC-ND" type="checkbox">
             CC BY-NC-ND
           </label>
           <label class="checkbox">
-            <input value="Other" type="checkbox">
+            <input name="Other" value="Other" type="checkbox">
             Other
           </label>
         </div>
@@ -94,15 +109,15 @@
     </div>
 
     <div class="control-group">
-      <label class="control-label" for="input01">Email Address</label>
+      <label class="control-label" for="input01">Author</label>
       <div class="controls">
-        <input placeholder="" class="input-xlarge" type="text">
-        <p class="help-block">Your email address (for any questions)</p>
+        <input name="map_author" placeholder="" class="input-xlarge" type="text">
+        <p class="help-block">The author of the map, if not yourself</p>
       </div>
     </div>
+
     <div class="control-group">
       <label class="control-label"></label>
-
       <div class="controls">
         <button class="btn btn-primary" type="submit">Submit</button>
       </div>
