@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for
 from werkzeug import secure_filename
 from models import *
+from util import md5sum
 
 app = Flask(__name__)
 app.config.from_object('settings')
@@ -56,9 +57,11 @@ def submit_map():
 
         mf = File(file_type_cd="Xonotic Map", filename=map_filename,
                 descr=map_descr, create_by=1)
+        mf.md5sum = md5sum(os.path.join(app.config['UPLOAD_FOLDER'], mf.filename))
 
         ssf = File(file_type_cd="Screenshot", filename=ss_filename,
                 descr="Primary screenshot", create_by=1)
+        ssf.md5sum = md5sum(os.path.join(app.config['UPLOAD_FOLDER'], ssf.filename))
 
         db.session.add_all([m, mf, ssf])
         db.session.flush()
