@@ -6,49 +6,119 @@ from flask.ext.sqlalchemy import SQLAlchemy
 # and for more stuff (like a session), you'll need app.test_request_context()
 db = SQLAlchemy()
 
+class FileType(db.Model):
+    __tablename__ = 'cd_file_types'
+
+    file_type_cd = db.Column(db.String(50), primary_key=True)
+    descr        = db.Column(db.String(100))
+    create_dt    = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, file_type_cd=None, descr=None):
+        self.file_type_cd = file_type_cd
+        self.descr        = descr
+        self.create_dt    = datetime.utcnow()
+
+    def __repr__(self):
+        return '%s' % self.file_type_cd
+
+class License(db.Model):
+    __tablename__ = 'cd_licenses'
+
+    license_cd   = db.Column(db.String(50), primary_key=True)
+    descr        = db.Column(db.String(300))
+    create_dt    = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, license_cd=None, descr=None):
+        self.license_cd   = file_type_cd
+        self.descr        = descr
+        self.create_dt    = datetime.utcnow()
+
+    def __repr__(self):
+        return '%s' % self.license_cd
+
+class ValidationCheck(db.Model):
+    __tablename__ = 'cd_validations'
+
+    validation_cd = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    reason        = db.Column(db.String(100))
+    descr         = db.Column(db.String(300))
+    create_dt     = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, validation_cd=None, descr=None):
+        self.validation_cd = validation_cd
+        self.descr         = descr
+        self.create_dt     = datetime.utcnow()
+
+    def __repr__(self):
+        return '%s' % self.validation_cd
+
 class File(db.Model):
     __tablename__ = 'files'
-    __table_args__ = {'sqlite_autoincrement':True}
 
     file_id      = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    filetype     = db.Column(db.String(100))
+    file_type_cd = db.Column(db.String(50), db.ForeignKey("cd_file_types.file_type_cd"))
     filename     = db.Column(db.String(100))
     descr        = db.Column(db.String(300))
     size         = db.Column(db.Integer)
     md5sum       = db.Column(db.String(32))
-    create_by    = db.Column(db.Integer)
-    create_dt    = db.Column(db.DateTime)
-    update_by    = db.Column(db.Integer)
-    update_dt    = db.Column(db.DateTime)
+    create_by    = db.Column(db.Integer, nullable=False)
+    create_dt    = db.Column(db.DateTime, nullable=False)
+    update_by    = db.Column(db.Integer, nullable=False)
+    update_dt    = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, filetype, filename, descr, create_by):
-        self.filetype     = filetype
+    def __init__(self, file_type_cd=None, filename=None, descr=None, create_by=None):
+        self.file_type_cd = file_type_cd
         self.filename     = filename
         self.descr        = descr
+        self.create_by    = create_by
         self.update_by    = create_by
         self.create_dt    = datetime.utcnow()
         self.update_dt    = self.create_dt
 
     def __repr__(self):
-        return '<File %s (%s)>' % (self.name, self.filetype)
+        return '%s (%s)' % (self.filename, self.filetype)
 
 class Map(db.Model):
     __tablename__ = 'maps'
-    __table_args__ = {'sqlite_autoincrement':True}
 
     map_id       = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name         = db.Column(db.String(100))
-    approved     = db.Column(db.Boolean)
-    downloadable = db.Column(db.Boolean)
-    file_id      = db.Column(db.Integer, db.ForeignKey("files.file_id"))
-    create_by    = db.Column(db.Integer)
-    create_dt    = db.Column(db.DateTime)
-    update_by    = db.Column(db.Integer)
-    update_dt    = db.Column(db.DateTime)
+    author       = db.Column(db.String(50))
+    descr        = db.Column(db.String(300))
+    create_by    = db.Column(db.Integer, nullable=False)
+    create_dt    = db.Column(db.DateTime, nullable=False)
+    update_by    = db.Column(db.Integer, nullable=False)
+    update_dt    = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, name, create_by):
+    def __init__(self, name=None, create_by=None):
         self.name         = name
+        self.create_by    = create_by
+        self.update_by    = create_by
+        self.create_dt    = datetime.utcnow()
+        self.update_dt    = self.create_dt
+
+    def __repr__(self):
+        return '%s' % self.name
+
+class MapVersion(db.Model):
+    __tablename__ = 'map_versions'
+
+    map_ver_id   = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    map_id       = db.Column(db.Integer, db.ForeignKey("maps.map_id"))
+    file_id      = db.Column(db.Integer, db.ForeignKey("files.file_id"))
+    version      = db.Column(db.String(100))
+    approved     = db.Column(db.Boolean)
+    validated    = db.Column(db.Boolean)
+    downloadable = db.Column(db.Boolean)
+    create_by    = db.Column(db.Integer, nullable=False)
+    create_dt    = db.Column(db.DateTime, nullable=False)
+    update_by    = db.Column(db.Integer, nullable=False)
+    update_dt    = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, version=None, create_by=None):
+        self.version      = version
         self.approved     = False
+        self.validated    = False
         self.downloadable = False
         self.create_by    = create_by
         self.update_by    = create_by
@@ -56,21 +126,21 @@ class Map(db.Model):
         self.update_dt    = self.create_dt
 
     def __repr__(self):
-        return '<Map %s>' % self.name
+        return '<MapVersion(%d)>' % self.map_ver_id
 
-class Screenshot(db.Model):
-    __tablename__ = 'screenshots'
-    __table_args__ = {'sqlite_autoincrement':True}
+class MapScreenshot(db.Model):
+    __tablename__ = 'map_screenshots'
 
-    ss_id        = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    mss_id       = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    map_id       = db.Column(db.Integer, db.ForeignKey("maps.map_id"))
+    file_id      = db.Column(db.Integer, db.ForeignKey("files.file_id"))
     name         = db.Column(db.String(100))
     width        = db.Column(db.Integer)
     height       = db.Column(db.Integer)
-    file_id      = db.Column(db.Integer, db.ForeignKey("files.file_id"))
-    create_by    = db.Column(db.Integer)
-    create_dt    = db.Column(db.DateTime)
-    update_by    = db.Column(db.Integer)
-    update_dt    = db.Column(db.DateTime)
+    create_by    = db.Column(db.Integer, nullable=False)
+    create_dt    = db.Column(db.DateTime, nullable=False)
+    update_by    = db.Column(db.Integer, nullable=False)
+    update_dt    = db.Column(db.DateTime, nullable=False)
 
     def __init__(self, name, create_by):
         self.name         = name
@@ -80,11 +150,38 @@ class Screenshot(db.Model):
         self.update_dt    = self.create_dt
 
     def __repr__(self):
-        return '<Screenshot %s>' % self.name
+        return '<MapScreenshot(%d)>' % self.mss_id
+
+class MapLicense(db.Model):
+    __tablename__ = 'map_licenses'
+
+    ml_id        = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    map_id       = db.Column(db.Integer, db.ForeignKey("maps.map_id"))
+    license_cd   = db.Column(db.String(50), db.ForeignKey("cd_licenses.license_cd"))
+    create_dt    = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self):
+        self.create_dt    = datetime.utcnow()
+
+    def __repr__(self):
+        return '<MapLicense(%d)>' % self.ml_id
+
+class MapValication(db.Model):
+    __tablename__ = 'map_validations'
+
+    mv_id         = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    map_id        = db.Column(db.Integer, db.ForeignKey("maps.map_id"))
+    validation_cd = db.Column(db.String(50), db.ForeignKey("cd_licenses.license_cd"))
+    create_dt     = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self):
+        self.create_dt    = datetime.utcnow()
+
+    def __repr__(self):
+        return '<MapValidation(%d)>' % self.mv_id
 
 class User(db.Model):
     __tablename__ = 'users'
-    __table_args__ = {'sqlite_autoincrement':True}
 
     user_id     = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username    = db.Column(db.String(length=30), default='', unique=True)
