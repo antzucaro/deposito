@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<form class="form-horizontal" action='http://localhost:5000/submit' method='post' enctype=multipart/form-data>
+<form class="form-horizontal" action="{{ url_for('submit_map') }}" method="post" enctype=multipart/form-data>
   <fieldset>
 
     <div id="legend" class="">
