@@ -90,6 +90,8 @@ class Map(db.Model):
     update_by    = db.Column(db.Integer, nullable=False)
     update_dt    = db.Column(db.DateTime, nullable=False)
 
+    db.UniqueConstraint('name', name='map_uk01')
+
     def __init__(self, name=None, create_by=None):
         self.name         = name
         self.create_by    = create_by
