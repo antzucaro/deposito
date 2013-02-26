@@ -188,6 +188,7 @@ class User(db.Model):
     user_id     = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username    = db.Column(db.String(length=30), default='', unique=True)
     password    = db.Column(db.String(length=100), default='')
+    openid      = db.Column(db.String(length=300), default='')
     active      = db.Column(db.Boolean, default=True)
 
     is_authenticated = False
