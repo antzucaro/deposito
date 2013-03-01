@@ -1,11 +1,85 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for
-from flask import flash, g, session
-from werkzeug import secure_filename
+from cryptacular.bcrypt import BCRYPTPasswordManager
 from deposito import *
 from deposito.models import *
 from deposito.util import md5sum
+from flask import Flask, render_template, request, redirect, url_for
+from flask import flash, g, session
+from flask_login import login_required, login_user
+from werkzeug import secure_filename
 
+
+@login_manager.user_loader
+def load_user(id):
+    try:
+        user = db.session.query(User).filter(User.user_id == id).one()
+    except:
+        user = None
+
+    return user
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    print "I'm in the login handler"
+    # a login request
+    if request.method == 'POST':
+        username = request.form.get('username', None)
+        password = request.form.get('password', None)
+
+        try:
+            user = db.session.query(User).filter(User.username==username).one()
+        except:
+            user = User()
+            user.password = ''
+
+        if manager.check(user.password, password):
+            login_user(user)
+            flash("Logged in successfully.")
+            return redirect(url_for("main_index"))
+        else:
+            flash("Could not log you in. Please try again.")
+            return redirect(url_for('login'))
+
+    # not a POST, just showing the login form
+    else:
+        return render_template('login.jinja', next=url_for('main_index'))
+
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    print "I'm in the registration handler"
+    # a registration request
+    if request.method == 'POST':
+        username = request.form.get('username', None)
+        password = request.form.get('password', None)
+        password_confirm = request.form.get('password_confirm', None)
+
+        err = False
+        if password != password_confirm:
+            err = True
+            flash("Password and confirmation don't match!")
+
+        users = db.session.query(User).filter(User.username==username).all()
+        if len(users) > 0:
+            err = True
+            flash("Sorry, that username is already taken! Please pick another.")
+
+        if err:
+            return redirect(url_for("register"))
+
+        hashed_password = manager.encode(password)
+        user = User()
+        user.username = username
+        user.password = hashed_password
+        user.active_ind = True
+        db.session.add(user)
+        db.session.commit()
+        flash("Account {0} created successfully.".format(user.username))
+
+        return redirect(url_for("main_index"))
+
+    # not a POST, just showing the register form
+    else:
+        return render_template('register.jinja')
 
 @app.route("/")
 def main_index():
@@ -80,37 +154,3 @@ def submit_map():
 
     else:
         return render_template('submit_map.jinja')
-
-@app.before_request
-def lookup_current_user():
-    g.user = None
-    if 'openid' in session:
-        openid = session['openid']
-        g.user = User.query.filter_by(openid=openid).first()
-
-@app.route('/login', methods=['GET', 'POST'])
-@oid.loginhandler
-def login():
-    if g.user is not None:
-        return redirect(oid.get_next_url())
-    if request.method == 'POST':
-        openid = request.form.get('openid')
-        if openid:
-            return oid.try_login(openid, ask_for=['email', 'fullname',
-                'nickname'])
-            return render_template('login.jinja', next=oid.get_next_url(),
-                    error=oid.fetch_error())
-    else:
-        return render_template('login.jinja')
-
-@oid.after_login
-def create_or_login(resp):
-    session['openid'] = resp.identity_url
-    user = User.query.filter_by(openid=resp.identity_url).first()
-    if user is not None:
-        flash(u'Successfully signed in')
-        g.user = user
-        return redirect(oid.get_next_url())
-    return redirect(url_for('main_index', next=oid.get_next_url(),
-                            name=resp.fullname or resp.nickname,
-                            email=resp.email))
