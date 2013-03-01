@@ -134,7 +134,7 @@ class MapScreenshot(db.Model):
     __tablename__ = 'map_screenshots'
 
     mss_id       = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    map_id       = db.Column(db.Integer, db.ForeignKey("maps.map_id"))
+    map_ver_id   = db.Column(db.Integer, db.ForeignKey("map_versions.map_ver_id"))
     file_id      = db.Column(db.Integer, db.ForeignKey("files.file_id"))
     name         = db.Column(db.String(100))
     width        = db.Column(db.Integer)
@@ -158,7 +158,7 @@ class MapLicense(db.Model):
     __tablename__ = 'map_licenses'
 
     ml_id        = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    map_id       = db.Column(db.Integer, db.ForeignKey("maps.map_id"))
+    map_ver_id   = db.Column(db.Integer, db.ForeignKey("map_versions.map_ver_id"))
     license_cd   = db.Column(db.String(50), db.ForeignKey("cd_licenses.license_cd"))
     create_dt    = db.Column(db.DateTime, nullable=False)
 
@@ -172,7 +172,7 @@ class MapValication(db.Model):
     __tablename__ = 'map_validations'
 
     mv_id         = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    map_id        = db.Column(db.Integer, db.ForeignKey("maps.map_id"))
+    map_ver_id    = db.Column(db.Integer, db.ForeignKey("map_versions.map_ver_id"))
     validation_cd = db.Column(db.String(50), db.ForeignKey("cd_licenses.license_cd"))
     create_dt     = db.Column(db.DateTime, nullable=False)
 
