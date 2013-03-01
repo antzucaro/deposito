@@ -168,7 +168,7 @@ class MapLicense(db.Model):
     def __repr__(self):
         return '<MapLicense(%d)>' % self.ml_id
 
-class MapValication(db.Model):
+class MapValidation(db.Model):
     __tablename__ = 'map_validations'
 
     mv_id         = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -181,6 +181,20 @@ class MapValication(db.Model):
 
     def __repr__(self):
         return '<MapValidation(%d)>' % self.mv_id
+
+class MapTag(db.Model):
+    __tablename__ = 'map_tags'
+
+    tag_id        = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    map_ver_id    = db.Column(db.Integer, db.ForeignKey("map_versions.map_ver_id"))
+    tag           = db.Column(db.String(50))
+    create_dt     = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self):
+        self.create_dt    = datetime.utcnow()
+
+    def __repr__(self):
+        return '<MapTag(%s)>' % self.tag
 
 class User(db.Model):
     __tablename__ = 'users'
