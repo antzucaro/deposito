@@ -1,35 +1,53 @@
 {% extends "base.jinja" %}
 {% block body %}
-<form class="form-horizontal" action="" method="post">
-  <fieldset>
+<div class="row">
+  <div class="span6">
+    <form class="form-horizontal" action="" method="post">
+      <fieldset>
 
-    <div id="legend" class="">
-      <legend class="">Login</legend>
-    </div>
+        <div id="legend" class="">
+          <legend class="">Login</legend>
+        </div>
 
-    <div class="control-group">
-      <label class="control-label" for="input01">Username</label>
-      <div class="controls">
-        <input name="username" placeholder="" class="input-xlarge" type="text">
-      </div>
-    </div>
+        <div class="control-group">
+          {{ form.username.label(class="control-label") }}
+          <div class="controls">
+            {{ form.username(class="input-xlarge") }}
+          </div>
+        </div>
 
-    <div class="control-group">
-      <label class="control-label" for="input01">Password</label>
-      <div class="controls">
-        <input name="password" placeholder="" class="input-xlarge" type="password">
-      </div>
-    </div>
+        {% if form.username.errors %}
+        <div class="alert alert-error">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          {% for error in form.username.errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
 
-    <div class="control-group">
-      <label class="control-label"></label>
-      <div class="controls">
-        <button class="btn btn-primary" type="submit">Submit</button>
-      </div>
-    </div>
+        <div class="control-group">
+          {{ form.password.label(class="control-label") }}
+          <div class="controls">
+            {{ form.password(class="input-xlarge") }}
+          </div>
+        </div>
 
-    <input type=hidden name=next value="{{ next }}">
+        {% if form.username.errors %}
+        <div class="alert alert-error">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          {% for error in form.password.errors %}{{ error }}{% endfor %}
+        </div>
+        {% endif %}
 
-  </fieldset>
-</form>
+        <div class="control-group">
+          <label class="control-label"></label>
+          <div class="controls">
+            <button class="btn btn-primary" type="submit">Submit</button>
+          </div>
+        </div>
+
+        <input type=hidden name=next value="{{ next }}">
+
+      </fieldset>
+    </form>
+  </div>
+</div>
 {% endblock %}

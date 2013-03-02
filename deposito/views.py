@@ -7,6 +7,8 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask import flash, g, session
 from flask_login import login_required, login_user
 from werkzeug import secure_filename
+from wtforms import Form, TextField, PasswordField, validators
+
 
 
 @login_manager.user_loader
@@ -18,13 +20,17 @@ def load_user(id):
 
     return user
 
+# the login form
+class LoginForm(Form):
+    username     = TextField('Username', [validators.Length(min=3, max=25)])
+    password     = PasswordField('Password', [validators.Length(min=6, max=35)])
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    print "I'm in the login handler"
-    # a login request
-    if request.method == 'POST':
-        username = request.form.get('username', None)
-        password = request.form.get('password', None)
+    form = LoginForm(request.form)
+    if request.method == 'POST' and form.validate():
+        username = form.username.data
+        password = form.password.data
 
         try:
             user = db.session.query(User).filter(User.username==username).one()
@@ -42,7 +48,7 @@ def login():
 
     # not a POST, just showing the login form
     else:
-        return render_template('login.jinja', next=url_for('main_index'))
+        return render_template('login.jinja', form=form, next=url_for('main_index'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
