@@ -7,9 +7,18 @@ from flask import Flask, render_template, request, redirect, url_for
 from flask import flash, g, session
 from flask_login import login_required, login_user
 from werkzeug import secure_filename
-from wtforms import Form, TextField, PasswordField, validators
+from wtforms import Form, TextField, TextAreaField, PasswordField, validators
 
+# forms (WTForms)
+class LoginForm(Form):
+    username     = TextField('Username', [validators.Length(min=3, max=25)])
+    password     = PasswordField('Password', [validators.Length(min=6, max=35)])
 
+class RegisterForm(LoginForm):
+    pw_confirm   = PasswordField('Confirm Password', [validators.Length(min=6, max=35)])
+    about        = TextAreaField('About Yourself')
+    email        = TextField('Email',
+            [validators.Email(message="That doesn't appear to be a valid email!"), validators.Optional()])
 
 @login_manager.user_loader
 def load_user(id):
@@ -19,11 +28,6 @@ def load_user(id):
         user = None
 
     return user
-
-# the login form
-class LoginForm(Form):
-    username     = TextField('Username', [validators.Length(min=3, max=25)])
-    password     = PasswordField('Password', [validators.Length(min=6, max=35)])
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -52,12 +56,15 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    print "I'm in the registration handler"
+    form = RegisterForm(request.form)
+
     # a registration request
-    if request.method == 'POST':
-        username = request.form.get('username', None)
-        password = request.form.get('password', None)
-        password_confirm = request.form.get('password_confirm', None)
+    if request.method == 'POST' and form.validate():
+        username = form.username.data
+        password = form.password.data
+        password_confirm = form.pw_confirm.data
+        email = form.email.data
+        about = form.about.data
 
         err = False
         if password != password_confirm:
@@ -76,16 +83,22 @@ def register():
         user = User()
         user.username = username
         user.password = hashed_password
+        user.email = email
+        user.about = about
         user.active_ind = True
+
         db.session.add(user)
         db.session.commit()
+
+        login_user(user)
+
         flash("Account {0} created successfully.".format(user.username))
 
-        return redirect(url_for("main_index"))
+        return redirect(url_for("main_index", form=form))
 
     # not a POST, just showing the register form
     else:
-        return render_template('register.jinja')
+        return render_template('register.jinja', form=form)
 
 @app.route("/")
 def main_index():

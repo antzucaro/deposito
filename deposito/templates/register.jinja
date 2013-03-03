@@ -8,25 +8,74 @@
     </div>
 
     <div class="control-group">
-      <label class="control-label" for="input01">Username</label>
+      {{ form.username.label(class="control-label") }}
       <div class="controls">
-        <input name="username" placeholder="" class="input-xlarge" type="text">
+        {{ form.username(class="input-xlarge") }}
       </div>
     </div>
 
+    {% if form.username.errors %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {% for error in form.username.errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+
     <div class="control-group">
-      <label class="control-label" for="input01">Password</label>
+      {{ form.password.label(class="control-label") }}
       <div class="controls">
-        <input name="password" placeholder="" class="input-xlarge" type="password">
+        {{ form.password(class="input-xlarge") }}
       </div>
     </div>
 
+    {% if form.password.errors %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {% for error in form.password.errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+
     <div class="control-group">
-      <label class="control-label" for="input01">Confirm Password</label>
+      {{ form.pw_confirm.label(class="control-label") }}
       <div class="controls">
-        <input name="password_confirm" placeholder="" class="input-xlarge" type="password">
+        {{ form.pw_confirm(class="input-xlarge") }}
       </div>
     </div>
+
+    {% if form.pw_confirm.errors %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {% for error in form.pw_confirm.errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="control-group">
+      {{ form.email.label(class="control-label") }}
+      <div class="controls">
+        {{ form.email(class="input-xlarge") }}
+      </div>
+    </div>
+
+    {% if form.email.errors %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {% for error in form.email.errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="control-group">
+      {{ form.about.label(class="control-label") }}
+      <div class="controls">
+        {{ form.about(class="input-xlarge") }}
+      </div>
+    </div>
+
+    {% if form.about.errors %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {% for error in form.about.errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
 
     <div class="control-group">
       <label class="control-label"></label>
