@@ -5,9 +5,10 @@ from deposito.models import *
 from deposito.util import md5sum
 from flask import Flask, render_template, request, redirect, url_for
 from flask import flash, g, session
-from flask_login import login_required, login_user
+from flask_login import login_required, login_user, logout_user
 from werkzeug import secure_filename
-from wtforms import Form, TextField, TextAreaField, PasswordField, validators
+from wtforms import Form, TextField, TextAreaField, PasswordField, FileField
+from wtforms import validators
 
 # forms (WTForms)
 class LoginForm(Form):
@@ -20,10 +21,21 @@ class RegisterForm(LoginForm):
     email        = TextField('Email',
             [validators.Email(message="That doesn't appear to be a valid email!"), validators.Optional()])
 
+class SubmitMapForm(Form):
+    name        = TextField('Name')
+    description = TextAreaField('Description', [validators.Optional()])
+    pk3         = FileField(u'PK3', [validators.regexp(u'\.[zip|pk3]$')])
+    version     = TextField('Version')
+    password    = PasswordField('Password', [validators.Length(min=6, max=35)])
+    screenshot  = FileField(u'Primary Screenshot', [validators.regexp(u'\.[jpg|png]$')])
+    author      = TextField('Author')
+
+# regular views
 @login_manager.user_loader
 def load_user(id):
     try:
         user = db.session.query(User).filter(User.user_id == id).one()
+        g.user = user
     except:
         user = None
 
@@ -53,6 +65,13 @@ def login():
     # not a POST, just showing the login form
     else:
         return render_template('login.jinja', form=form, next=url_for('main_index'))
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    flash("You've successfully logged out!")
+
+    return redirect(url_for("login"))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():

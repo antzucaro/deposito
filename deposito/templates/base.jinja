@@ -45,6 +45,12 @@
               <li class="active"><a href="{{ url_for('main_index') }}">Maps</a></li>
               <li><a href="{{ url_for('submit_map') }}">Submit</a></li>
             </ul>
+            <ul class="nav pull-right">
+              {% if session['user_id'] %}
+              <li><a href="{{ url_for('main_index') }}">{{ g.user.username }}</a></li>
+              <li><a href="{{ url_for('logout') }}">logout</a></li>
+              {% endif %}
+            </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>
