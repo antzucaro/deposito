@@ -9,112 +9,101 @@
       <legend class="">Submit A Map</legend>
     </div>
 
+    <!-- Name -->
     <div class="control-group">
-      <label class="control-label" for="input01">Name</label>
+      {{ form.name.label(class="control-label") }}
       <div class="controls">
-        <input name="map_name" placeholder="" class="input-xlarge" type="text">
+        {{ form.name(class="input-xlarge") }}
         <p class="help-block">Human-readable map name</p>
       </div>
     </div>
 
+    {% if form.name.errors %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {% for error in form.name.errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- PK3 file -->
     <div class="control-group">
-      <label class="control-label">Description</label>
+      {{ form.pk3.label(class="control-label") }}
+      <div class="controls">
+        {{ form.pk3(class="input-file") }}
+      </div>
+    </div>
+
+   {% if form.pk3.errors %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {% for error in form.pk3.errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+
+
+    <!-- Description -->
+    <div class="control-group">
+      {{ form.description.label(class="control-label") }}
       <div class="controls">
         <div class="textarea">
-          <textarea name="map_descr" type="" class=""> </textarea>
+        {{ form.description(style="width: 270px; height: 150px;") }}
         </div>
       </div>
     </div>
 
-    <div class="control-group">
-      <label class="control-label">PK3</label>
-      <div class="controls">
-        <input class="input-file" name="map_file" type="file">
-      </div>
+   {% if form.description.errors %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {% for error in form.description.errors %}{{ error }}{% endfor %}
     </div>
+    {% endif %}
 
+    <!-- Version -->
     <div class="control-group">
-      <label class="control-label" for="input01">Version</label>
+      {{ form.version.label(class="control-label") }}
       <div class="controls">
-        <input name="map_version" placeholder="" class="input-xlarge" type="text">
+        {{ form.version(class="input-xlarge") }}
         <p class="help-block">Map version</p>
       </div>
     </div>
 
+   {% if form.version.errors %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {% for error in form.version.errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Screenshot -->
     <div class="control-group">
-      <label class="control-label">Primary Screenshot</label>
+      {{ form.screenshot.label(class="control-label") }}
       <div class="controls">
-        <input class="input-file" name="map_screenshot" type="file">
+        {{ form.screenshot(class="input-file") }}
       </div>
     </div>
 
-    <div class="control-group">
-      <label class="control-label">License</label>
-      <div class="controls">
-
-        <div class="span1">
-          <label class="checkbox">
-            <input name="GPLv2" value="GPLv2" type="checkbox">
-            GPLv2
-          </label>
-          <label class="checkbox">
-            <input name="GPLv3" value="GPLv3" type="checkbox">
-            GPLv3
-          </label>
-          <label class="checkbox">
-            <input name="MIT" value="MIT" type="checkbox">
-            MIT
-          </label>
-          <label class="checkbox">
-            <input name="BSD" value="BSD" type="checkbox">
-            BSD
-          </label>
-          <label class="checkbox">
-            <input name="Apache" value="Apache" type="checkbox">
-            Apache
-          </label>
-          <label class="checkbox">
-            <input name="CC BY" value="CC BY" type="checkbox">
-            CC BY
-          </label>
-        </div>
-
-        <div class="span2">
-          <label class="checkbox">
-            <input name="CC BY-SA" value="CC BY-SA" type="checkbox">
-            CC BY-SA
-          </label>
-          <label class="checkbox">
-            <input name="CC BY-ND" value="CC BY-ND" type="checkbox">
-            CC BY-ND
-          </label>
-          <label class="checkbox">
-            <input name="CC BY-NC" value="CC BY-NC" type="checkbox">
-            CC BY-NC
-          </label>
-          <label class="checkbox">
-            <input name="CC BY-NC-SA" value="CC BY-NC-SA" type="checkbox">
-            CC BY-NC-SA
-          </label>
-          <label class="checkbox">
-            <input name="CC BY-NC-ND" value="CC BY-NC-ND" type="checkbox">
-            CC BY-NC-ND
-          </label>
-          <label class="checkbox">
-            <input name="Other" value="Other" type="checkbox">
-            Other
-          </label>
-        </div>
-      </div>
+   {% if form.screenshot.errors %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {% for error in form.screenshot.errors %}{{ error }}{% endfor %}
     </div>
+    {% endif %}
 
+    <!-- Author -->
     <div class="control-group">
-      <label class="control-label" for="input01">Author</label>
+      {{ form.author.label(class="control-label") }}
       <div class="controls">
-        <input name="map_author" placeholder="" class="input-xlarge" type="text">
+        {{ form.author(class="input-xlarge") }}
         <p class="help-block">The author of the map, if not yourself</p>
       </div>
     </div>
+
+   {% if form.author.errors %}
+    <div class="alert alert-error">
+      <button type="button" class="close" data-dismiss="alert">&times;</button>
+      {% for error in form.author.errors %}{{ error }}{% endfor %}
+    </div>
+    {% endif %}
 
     <div class="control-group">
       <label class="control-label"></label>

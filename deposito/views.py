@@ -23,12 +23,11 @@ class RegisterForm(LoginForm):
 
 class SubmitMapForm(Form):
     name        = TextField('Name')
+    pk3         = FileField(u'PK3')
     description = TextAreaField('Description', [validators.Optional()])
-    pk3         = FileField(u'PK3', [validators.regexp(u'\.[zip|pk3]$')])
-    version     = TextField('Version')
-    password    = PasswordField('Password', [validators.Length(min=6, max=35)])
-    screenshot  = FileField(u'Primary Screenshot', [validators.regexp(u'\.[jpg|png]$')])
-    author      = TextField('Author')
+    version     = TextField('Version', [validators.Optional()])
+    screenshot  = FileField(u'Primary Screenshot', [validators.Optional()])
+    author      = TextField('Author', [validators.Optional()])
 
 # regular views
 @login_manager.user_loader
@@ -132,34 +131,24 @@ def allowed_file(filename, allowed_extensions):
 
 @app.route("/submit", methods=['GET', 'POST'])
 def submit_map():
-    if request.method == 'POST':
-        map_name = request.form.get('map_name', None)
-        map_descr = request.form.get('map_descr', None)
-        map_author = request.form.get('map_author', None)
-        map_version = request.form.get('map_version', None)
-        map_filename = None
-        ss_filename = None
+    form = SubmitMapForm(request.form)
+    if request.method == 'POST' and form.validate():
+        map_name = form.name.data
+        map_descr = form.description.data
+        map_author = form.author.data
+        map_version = form.version.data
 
-        map_file = request.files['map_file']
+        map_file = request.files[form.pk3.name]
         if map_file and allowed_file(map_file.filename,
                 app.config['VALID_MAP_EXTENSIONS']):
             map_filename = secure_filename(map_file.filename)
             map_file.save(os.path.join(app.config['UPLOAD_FOLDER'], map_filename))
 
-        map_screenshot = request.files['map_screenshot']
+        map_screenshot = request.files[form.screenshot.name]
         if map_screenshot and allowed_file(map_screenshot.filename,
                 app.config['VALID_SS_EXTENSIONS']):
             ss_filename = secure_filename(map_screenshot.filename)
             map_screenshot.save(os.path.join(app.config['UPLOAD_FOLDER'], ss_filename))
-
-        # licenses are in all sorts of different checkboxes
-        licenses = []
-        for l in ('GPLv2', 'GPLv3', 'MIT', 'BSD', 'Apache', 'CC BY',
-                'CC BY-SA', 'CC BY-ND', 'CC BY-NC', 'CC BY-NC-SA',
-                'CC BY-NC-ND', 'Other'):
-            val = request.form.get(l, None)
-            if val is not None:
-                licenses.append(val)
 
         m = Map(name=map_name, create_by=1)
         m.author = map_author
@@ -191,4 +180,4 @@ def submit_map():
         return redirect(url_for('main_index'))
 
     else:
-        return render_template('submit_map.jinja')
+        return render_template('submit_map.jinja', form=form)
