@@ -49,6 +49,8 @@
               {% if session['user_id'] %}
               <li><a href="{{ url_for('main_index') }}">{{ g.user.username }}</a></li>
               <li><a href="{{ url_for('logout') }}">logout</a></li>
+              {% else %}
+              <li><a href="{{ url_for('login') }}">login</a></li>
               {% endif %}
             </ul>
           </div><!--/.nav-collapse -->
