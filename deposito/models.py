@@ -92,8 +92,10 @@ class Map(db.Model):
 
     db.UniqueConstraint('name', name='map_uk01')
 
-    def __init__(self, name=None, create_by=None):
+    def __init__(self, name=None, create_by=None, author=None, descr=None):
         self.name         = name
+        self.author       = author
+        self.descr        = descr
         self.create_by    = create_by
         self.update_by    = create_by
         self.create_dt    = datetime.utcnow()
@@ -109,6 +111,7 @@ class MapVersion(db.Model):
     map_id       = db.Column(db.Integer, db.ForeignKey("maps.map_id"))
     file_id      = db.Column(db.Integer, db.ForeignKey("files.file_id"))
     version      = db.Column(db.String(100))
+    primary      = db.Column(db.Boolean)
     approved     = db.Column(db.Boolean)
     validated    = db.Column(db.Boolean)
     downloadable = db.Column(db.Boolean)
@@ -117,8 +120,12 @@ class MapVersion(db.Model):
     update_by    = db.Column(db.Integer, nullable=False)
     update_dt    = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, version=None, create_by=None):
+    def __init__(self, map_id=None, file_id=None, version=None, primary=None,
+            create_by=None):
+        self.map_id       = map_id
+        self.file_id      = file_id
         self.version      = version
+        self.primary      = False
         self.approved     = False
         self.validated    = False
         self.downloadable = False
@@ -137,6 +144,7 @@ class MapScreenshot(db.Model):
     map_ver_id   = db.Column(db.Integer, db.ForeignKey("map_versions.map_ver_id"))
     file_id      = db.Column(db.Integer, db.ForeignKey("files.file_id"))
     name         = db.Column(db.String(100))
+    primary      = db.Column(db.Boolean)
     width        = db.Column(db.Integer)
     height       = db.Column(db.Integer)
     create_by    = db.Column(db.Integer, nullable=False)
@@ -144,8 +152,12 @@ class MapScreenshot(db.Model):
     update_by    = db.Column(db.Integer, nullable=False)
     update_dt    = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, name, create_by):
+    def __init__(self, map_ver_id=None, file_id=None, name=None, primary=None,
+            create_by=None):
+        self.map_ver_id   = map_ver_id
+        self.file_id      = file_id
         self.name         = name
+        self.primary      = False
         self.create_by    = create_by
         self.update_by    = create_by
         self.create_dt    = datetime.utcnow()

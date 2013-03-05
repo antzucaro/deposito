@@ -1,12 +1,11 @@
 {% extends "base.jinja" %}
 
 {% block body %}
-<h2>Oh hi, this is the main index.</h2>
+<h2>Main Index</h2>
 
 {% if maps|length == 0 or maps is not defined %}
 <p>Hmm, there doesn't seem to be anything here!</p>
 {% else %}
-<p>Here's my list of maps I've seen so far:</p>
 
 <table class="table table-hover">
   <thead>

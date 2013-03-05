@@ -35,6 +35,7 @@ def load_user(id):
     try:
         user = db.session.query(User).filter(User.user_id == id).one()
         g.user = user
+        session['id'] = user.user_id
     except:
         user = None
 
@@ -122,7 +123,6 @@ def register():
 def main_index():
     session = db.session()
     maps = session.query(Map).all()
-
     return render_template('main_index.jinja', maps=maps)
 
 def allowed_file(filename, allowed_extensions):
@@ -133,48 +133,64 @@ def allowed_file(filename, allowed_extensions):
 def submit_map():
     form = SubmitMapForm(request.form)
     if request.method == 'POST' and form.validate():
-        map_name = form.name.data
-        map_descr = form.description.data
-        map_author = form.author.data
-        map_version = form.version.data
+        # create the map
+        m = Map(
+            name      = form.name.data,
+            descr     = form.description.data,
+            author    = form.author.data,
+            create_by = g.user.user_id)
 
+        db.session.add(m)
+
+        # create the map file and save it
+        mf = None
         map_file = request.files[form.pk3.name]
         if map_file and allowed_file(map_file.filename,
                 app.config['VALID_MAP_EXTENSIONS']):
             map_filename = secure_filename(map_file.filename)
-            map_file.save(os.path.join(app.config['UPLOAD_FOLDER'], map_filename))
 
+            mf = File(descr=form.description.data, create_by=g.user.user_id)
+            db.session.add(mf)
+            db.session.flush()
+
+            mf.filename = "{0}_{1}".format(mf.file_id, map_filename)
+            map_file.save(os.path.join(app.config['UPLOAD_FOLDER'], mf.filename))
+            mf.md5sum = md5sum(os.path.join(app.config['UPLOAD_FOLDER'], mf.filename))
+
+        # create the screenshot and save it
+        ssf = None
         map_screenshot = request.files[form.screenshot.name]
         if map_screenshot and allowed_file(map_screenshot.filename,
                 app.config['VALID_SS_EXTENSIONS']):
             ss_filename = secure_filename(map_screenshot.filename)
-            map_screenshot.save(os.path.join(app.config['UPLOAD_FOLDER'], ss_filename))
 
-        m = Map(name=map_name, create_by=1)
-        m.author = map_author
-        m.descr = map_descr
+            ssf = File(descr=form.description.data, create_by=g.user.user_id)
+            db.session.add(ssf)
+            db.session.flush()
 
-        mf = File(file_type_cd="Xonotic Map", filename=map_filename,
-                descr=map_descr, create_by=1)
-        mf.md5sum = md5sum(os.path.join(app.config['UPLOAD_FOLDER'], mf.filename))
+            ssf.filename = "{0}_{1}".format(ssf.file_id, ss_filename)
+            map_screenshot.save(os.path.join(app.config['UPLOAD_FOLDER'], ssf.filename))
+            ssf.md5sum = md5sum(os.path.join(app.config['UPLOAD_FOLDER'], ssf.filename))
 
-        ssf = File(file_type_cd="Screenshot", filename=ss_filename,
-                descr="Primary screenshot", create_by=1)
-        ssf.md5sum = md5sum(os.path.join(app.config['UPLOAD_FOLDER'], ssf.filename))
+        # create the map version
+        mv = MapVersion(
+                map_id    = m.map_id,
+                file_id   = mf.file_id,
+                version   = form.version.data,
+                primary   = True,
+                create_by = g.user.user_id)
 
-        db.session.add_all([m, mf, ssf])
+        db.session.add(mv)
         db.session.flush()
 
-        mv = MapVersion(version=map_version, create_by=1)
-        mv.map_id = m.map_id
-        mv.file_id = mf.file_id
-        db.session.add(mv)
+        if ssf:
+            mss = MapScreenshot(
+                    map_ver_id = mv.map_ver_id,
+                    file_id    = ssf.file_id,
+                    primary    = True,
+                    create_by  = g.user.user_id)
 
-        mss = MapScreenshot(name="Primary screenshot for {0}".format(map_name),
-                create_by=1)
-        mss.map_id = m.map_id
-        mss.file_id = ssf.file_id
-        db.session.add(mss)
+            db.session.add(mss)
 
         db.session.commit()
         return redirect(url_for('main_index'))
