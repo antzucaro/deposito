@@ -130,6 +130,7 @@ def allowed_file(filename, allowed_extensions):
             filename.lower().rsplit('.', 1)[1] in allowed_extensions
 
 @app.route("/submit", methods=['GET', 'POST'])
+@login_required
 def submit_map():
     form = SubmitMapForm(request.form)
     if request.method == 'POST' and form.validate():
