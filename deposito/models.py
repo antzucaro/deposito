@@ -125,7 +125,7 @@ class MapVersion(db.Model):
         self.map_id       = map_id
         self.file_id      = file_id
         self.version      = version
-        self.primary      = False
+        self.primary      = primary
         self.approved     = False
         self.validated    = False
         self.downloadable = False
