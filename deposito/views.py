@@ -122,7 +122,12 @@ def register():
 @app.route("/")
 def main_index():
     session = db.session()
-    maps = session.query(Map).all()
+    maps = session.query(Map.map_id, Map.create_dt, Map.name, Map.descr,
+            Map.author, MapVersion.file_id, File.filename).\
+            filter(MapVersion.map_id == Map.map_id).\
+            filter(MapVersion.file_id == File.file_id).\
+            all()
+
     return render_template('main_index.jinja', maps=maps)
 
 def allowed_file(filename, allowed_extensions):
