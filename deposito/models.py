@@ -7,116 +7,43 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
 
 
-class FileType(db.Model):
-    __tablename__ = 'cd_file_types'
-
-    file_type_cd = db.Column(db.String(50), primary_key=True)
-    descr = db.Column(db.String(100))
-    create_dt = db.Column(db.DateTime, nullable=False)
-
-    def __init__(self, file_type_cd=None, descr=None):
-        self.file_type_cd = file_type_cd
-        self.descr = descr
-        self.create_dt = datetime.utcnow()
-
-    def __repr__(self):
-        return '%s' % self.file_type_cd
-
-
-class License(db.Model):
-    __tablename__ = 'cd_licenses'
-
-    license_cd = db.Column(db.String(50), primary_key=True)
-    descr = db.Column(db.String(300))
-    create_dt = db.Column(db.DateTime, nullable=False)
-
-    def __init__(self, license_cd=None, descr=None):
-        self.license_cd = file_type_cd
-        self.descr = descr
-        self.create_dt = datetime.utcnow()
-
-    def __repr__(self):
-        return '%s' % self.license_cd
-
-
-class ValidationCheck(db.Model):
-    __tablename__ = 'cd_validations'
-
-    validation_cd = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    reason = db.Column(db.String(100))
-    descr = db.Column(db.String(300))
-    create_dt = db.Column(db.DateTime, nullable=False)
-
-    def __init__(self, validation_cd=None, descr=None):
-        self.validation_cd = validation_cd
-        self.descr = descr
-        self.create_dt = datetime.utcnow()
-
-    def __repr__(self):
-        return '%s' % self.validation_cd
-
-
-class File(db.Model):
-    __tablename__ = 'files'
-
-    file_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    file_type_cd = db.Column(db.String(50), db.ForeignKey("cd_file_types.file_type_cd"))
-    filename = db.Column(db.String(100))
-    descr = db.Column(db.String(300))
-    size = db.Column(db.Integer)
-    md5sum = db.Column(db.String(32))
-    create_by = db.Column(db.Integer, nullable=False)
-    create_dt = db.Column(db.DateTime, nullable=False)
-    update_by = db.Column(db.Integer, nullable=False)
-    update_dt = db.Column(db.DateTime, nullable=False)
-
-    def __init__(self, file_type_cd=None, filename=None, descr=None, create_by=None):
-        self.file_type_cd = file_type_cd
-        self.filename = filename
-        self.descr = descr
-        self.create_by = create_by
-        self.update_by = create_by
-        self.create_dt = datetime.utcnow()
-        self.update_dt = self.create_dt
-
-    def __repr__(self):
-        return '%s (%s)' % (self.filename, self.filetype)
-
-
 class Map(db.Model):
-    __tablename__ = 'maps'
+    __tablename__ = "map"
 
     map_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100))
     author = db.Column(db.String(50))
-    descr = db.Column(db.String(300))
+    description = db.Column(db.String(300))
     create_by = db.Column(db.Integer, nullable=False)
     create_dt = db.Column(db.DateTime, nullable=False)
     update_by = db.Column(db.Integer, nullable=False)
     update_dt = db.Column(db.DateTime, nullable=False)
 
-    db.UniqueConstraint('name', name='map_uk01')
+    db.UniqueConstraint("name", name="map_uk01")
 
-    def __init__(self, name=None, create_by=None, author=None, descr=None):
+    def __init__(self, name, author, description=None, create_by=None):
         self.name = name
         self.author = author
-        self.descr = descr
+        self.description = description
         self.create_by = create_by
         self.update_by = create_by
         self.create_dt = datetime.utcnow()
         self.update_dt = self.create_dt
 
     def __repr__(self):
-        return '%s' % self.name
+        return "<Map {0.name}>".format(self)
 
 
 class MapVersion(db.Model):
-    __tablename__ = 'map_versions'
+    __tablename__ = "map_version"
 
-    map_ver_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    map_id = db.Column(db.Integer, db.ForeignKey("maps.map_id"))
-    file_id = db.Column(db.Integer, db.ForeignKey("files.file_id"))
+    map_version_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    map_id = db.Column(db.Integer, db.ForeignKey("map.map_id"))
     version = db.Column(db.String(100))
+    file = db.Column(db.String(500))
+    size = db.Column(db.Integer)
+    md5sum = db.Column(db.String(32))
+    sha256sum = db.Column(db.String(64))
     primary = db.Column(db.Boolean)
     approved = db.Column(db.Boolean)
     validated = db.Column(db.Boolean)
@@ -126,11 +53,10 @@ class MapVersion(db.Model):
     update_by = db.Column(db.Integer, nullable=False)
     update_dt = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, map_id=None, file_id=None, version=None, primary=None,
-            create_by=None):
+    def __init__(self, map_id, version, file, primary=False, create_by=None):
         self.map_id = map_id
-        self.file_id = file_id
         self.version = version
+        self.file = file # TODO: calculate size, md5sum, and sha256sum
         self.primary = primary
         self.approved = False
         self.validated = False
@@ -141,17 +67,17 @@ class MapVersion(db.Model):
         self.update_dt = self.create_dt
 
     def __repr__(self):
-        return '<MapVersion(%d)>' % self.map_ver_id
+        return "<MapVersion {0.map_version_id>".format(self)
 
 
 class MapScreenshot(db.Model):
-    __tablename__ = 'map_screenshots'
+    __tablename__ = "map_screenshot"
 
-    mss_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    map_ver_id = db.Column(db.Integer, db.ForeignKey("map_versions.map_ver_id"))
-    file_id = db.Column(db.Integer, db.ForeignKey("files.file_id"))
+    map_screenshot_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    map_id = db.Column(db.Integer, db.ForeignKey("map.map_id"))
     name = db.Column(db.String(100))
-    primary = db.Column(db.Boolean)
+    file = db.Column(db.String(500))
+    size = db.Column(db.Integer)
     width = db.Column(db.Integer)
     height = db.Column(db.Integer)
     create_by = db.Column(db.Integer, nullable=False)
@@ -159,9 +85,9 @@ class MapScreenshot(db.Model):
     update_by = db.Column(db.Integer, nullable=False)
     update_dt = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, map_ver_id=None, file_id=None, name=None, primary=None, create_by=None):
-        self.map_ver_id = map_ver_id
-        self.file_id = file_id
+    def __init__(self, map_id, name, file, create_by=None):
+        self.map_id = map_id
+        self.file = file
         self.name = name
         self.primary = False
         self.create_by = create_by
@@ -170,56 +96,44 @@ class MapScreenshot(db.Model):
         self.update_dt = self.create_dt
 
     def __repr__(self):
-        return '<MapScreenshot(%d)>' % self.mss_id
+        return "<MapScreenshot {0.file}>".format(self)
+
+
+class License(db.Model):
+    __tablename__ = "cd_license"
+
+    license_cd = db.Column(db.String(50), primary_key=True)
+    descr = db.Column(db.String(300))
+    create_dt = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, license_cd=None, descr=None):
+        self.license_cd = license_cd
+        self.descr = descr
+        self.create_dt = datetime.utcnow()
+
+    def __repr__(self):
+        return "<License {0.license_cd}>".format(self)
 
 
 class MapLicense(db.Model):
-    __tablename__ = 'map_licenses'
+    __tablename__ = "map_license"
 
-    ml_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    map_ver_id = db.Column(db.Integer, db.ForeignKey("map_versions.map_ver_id"))
-    license_cd = db.Column(db.String(50), db.ForeignKey("cd_licenses.license_cd"))
+    map_license_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    map_version_id = db.Column(db.Integer, db.ForeignKey("map_version.map_version_id"))
+    license_cd = db.Column(db.String(50), db.ForeignKey("cd_license.license_cd"))
     create_dt = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self):
+    def __init__(self, map_version_id, license_cd):
+        self.map_version_id = map_version_id
+        self.license_cd = license_cd
         self.create_dt = datetime.utcnow()
 
     def __repr__(self):
-        return '<MapLicense(%d)>' % self.ml_id
-
-
-class MapValidation(db.Model):
-    __tablename__ = 'map_validations'
-
-    mv_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    map_ver_id = db.Column(db.Integer, db.ForeignKey("map_versions.map_ver_id"))
-    validation_cd = db.Column(db.String(50), db.ForeignKey("cd_licenses.license_cd"))
-    create_dt = db.Column(db.DateTime, nullable=False)
-
-    def __init__(self):
-        self.create_dt    = datetime.utcnow()
-
-    def __repr__(self):
-        return '<MapValidation(%d)>' % self.mv_id
-
-
-class MapTag(db.Model):
-    __tablename__ = 'map_tags'
-
-    tag_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    map_ver_id = db.Column(db.Integer, db.ForeignKey("map_versions.map_ver_id"))
-    tag = db.Column(db.String(50))
-    create_dt = db.Column(db.DateTime, nullable=False)
-
-    def __init__(self):
-        self.create_dt = datetime.utcnow()
-
-    def __repr__(self):
-        return '<MapTag(%s)>' % self.tag
+        return "<MapLicense {0.map_license_id}>".format(self)
 
 
 class User(db.Model):
-    __tablename__ = 'users'
+    __tablename__ = "user"
 
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(length=30), default='', unique=True)
@@ -229,10 +143,10 @@ class User(db.Model):
     openid = db.Column(db.String(length=300), default='')
     active = db.Column(db.Boolean, default=True)
 
-    is_authenticated = False
+    authenticated = False
 
     def is_authenticated(self):
-        return self.is_authenticated
+        return self.authenticated
 
     def is_active(self):
         return self.active
@@ -244,4 +158,4 @@ class User(db.Model):
         return unicode(self.user_id)
 
     def __repr__(self):
-        return '<User %s>' % self.username
+        return "<User {0.username}>".format(self)

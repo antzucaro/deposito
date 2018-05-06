@@ -12,7 +12,7 @@ login_manager.setup_app(app)
 login_manager.login_view = 'login'
 
 # cryptacular password manager
-manager = BCRYPTPasswordManager()
+pw_manager = BCRYPTPasswordManager()
 
 # flask-sqlalchemy
 db.init_app(app)
