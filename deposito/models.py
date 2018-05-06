@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask.ext.sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 
 # Note: since we're not binding the app here, we have to call
 # db.create_all(app=app) from the command line to create the tables
